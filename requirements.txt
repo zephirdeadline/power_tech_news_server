@@ -1,6 +1,8 @@
 Django==2.2
+django-cors-headers==2.5.2
 django-templated-mail==1.1.1
 djangorestframework==3.9.2
 djoser==1.5.0
+feedparser==5.2.1
 pytz==2018.9
 sqlparse==0.3.0

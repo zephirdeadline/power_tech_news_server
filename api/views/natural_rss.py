@@ -4,6 +4,7 @@ import feedparser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from api.convertors.lemondeinformatique import Lemondeinformatique
 from api.convertors.zdnet import Zdnet
 from api.serializers.rss_serializer import RssSerializer
 
@@ -11,7 +12,8 @@ from api.serializers.rss_serializer import RssSerializer
 class NaturalRss(APIView):
 
     channel_to_fetch = [
-        Zdnet()
+        Zdnet(),
+        Lemondeinformatique(),
     ]
 
     def get(self, request):
