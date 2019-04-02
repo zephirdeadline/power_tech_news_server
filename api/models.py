@@ -17,4 +17,11 @@ class Rss(models.Model):
     description = models.TextField(null=True, blank=True)
     url_image = models.CharField(max_length=128, null=True, blank=True)
     url_origin = models.CharField(max_length=128)
-    is_read = models.BooleanField(default=False)
+
+
+class Feed(models.Model):
+    channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
+    title = models.CharField(max_length=128)
+    description = models.TextField(null=True, blank=True)
+    url_image = models.CharField(max_length=128, null=True, blank=True)
+    url_origin = models.CharField(max_length=128)

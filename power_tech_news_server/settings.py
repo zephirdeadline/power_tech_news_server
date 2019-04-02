@@ -34,6 +34,9 @@ CORS_ORIGIN_ALLOW_ALL = True
 INSTALLED_APPS = [
     'api',
     'corsheaders',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'djoser',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -72,6 +75,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'power_tech_news_server.wsgi.application'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
