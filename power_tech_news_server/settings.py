@@ -25,7 +25,7 @@ SECRET_KEY = 'd#)*a==vly4iz%6*ie@=t&*zk)5s9%(c!f=k6wau4(h*3lbgg^'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['http://news.w4pity.fr', 'news.w4pity.fr', 'localhost']
 
 CORS_ORIGIN_ALLOW_ALL = True
 
