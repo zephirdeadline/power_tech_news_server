@@ -16,7 +16,7 @@ class UniversalRss:
 
     def get_date(self, struc_date):
         if struc_date is None:
-            return None
+            return datetime.now()
         return datetime.fromtimestamp(mktime(struc_date))
 
     def rss(self, request):
@@ -36,4 +36,4 @@ class UniversalRss:
         # if not isinstance(user, AnonymousUser):
         #     rss.user_read.add(user)
 
-        return sorted(rss_list, key=lambda x: x.date or timezone.make_aware(datetime.min), reverse=True)
+        return sorted(rss_list, key=lambda x: x.date, reverse=True)

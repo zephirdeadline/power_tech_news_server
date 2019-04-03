@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -15,7 +17,7 @@ class Rss(models.Model):
     description = models.TextField(null=True, blank=True)
     url_image = models.CharField(max_length=128, null=True, blank=True)
     url_origin = models.CharField(max_length=128)
-    date = models.DateTimeField(null=True)
+    date = models.DateTimeField(default=datetime.datetime.now())
 
 
 class Feed(models.Model):
