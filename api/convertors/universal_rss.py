@@ -4,27 +4,37 @@ from time import mktime
 import feedparser
 import pytz
 from django.contrib.auth.models import AnonymousUser
+from django.db.models import Q
 from django.utils import timezone
 
-from api.models import Channel, Rss, Feed, RssStatus
+from api.models import Channel, Rss, Feed, RssStatus, BlacklistChannel
 
 
 class UniversalRss:
 
     def __init__(self):
-        self.feeds = Feed.objects.all()
+        pass
 
     def get_date(self, struc_date):
         if struc_date is None:
-            return datetime.now()
-        return datetime.fromtimestamp(mktime(struc_date))
+            return datetime.now(tz=pytz.UTC)
+        return datetime.fromtimestamp(mktime(struc_date), tz=pytz.UTC)
 
     def rss(self, request):
+        if not request.user.is_anonymous:
+            blchs = [blch.channel.id for blch in BlacklistChannel.objects.filter(user=request.user)]
+            chs = [ch.id for ch in Channel.objects.filter(Q(user=None) | Q(user=request.user))]
+            feeds = list(Channel.objects.filter(pk__in=[ch for ch in chs if ch not in blchs]))
+        else:
+            feeds = list(Channel.objects.filter(user=None))
+
+        if not request.user.is_anonymous:
+            feeds += list(Channel.objects.filter(user=request.user))
         rss_list = []
-        for feed in self.feeds:
-            news_feed = feedparser.parse(feed.channel.url)
+        for feed in feeds:
+            news_feed = feedparser.parse(feed.url)
             for rss in news_feed.entries:
-                r, _ = Rss.objects.get_or_create(channel_id=feed.channel.id,
+                r, _ = Rss.objects.get_or_create(channel_id=feed.id,
                                                  title=rss.get('title', None),
                                                  description=rss.get('summary', None),
                                                  url_image=rss.get('r', None),
@@ -36,4 +46,4 @@ class UniversalRss:
         # if not isinstance(user, AnonymousUser):
         #     rss.user_read.add(user)
 
-        return sorted(rss_list, key=lambda x: x.date, reverse=True)
+        return sorted(rss_list, key=lambda x: x.date, reverse=True)[:20]

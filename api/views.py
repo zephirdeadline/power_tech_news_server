@@ -27,6 +27,5 @@ def set_as_read(request, id_rss):
 def fetch(request):
     url = request.GET.get('url')
     entries = feedparser.parse(url).entries
-    channel = Channel.objects.create(url=url, name=url)
-    Feed.objects.create(channel=channel, url_origin='link', description='summary', title='title', date='published')
+    channel = Channel.objects.create(user=request.user, url=url, name=url)
     return HttpResponse()

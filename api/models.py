@@ -7,6 +7,7 @@ from django.db import models
 
 
 class Channel(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, default=None)
     name = models.CharField(max_length=64)
     url = models.CharField(max_length=128)
 
@@ -36,3 +37,8 @@ class RssStatus(models.Model):
 
     class Meta:
         unique_together = ('user', 'rss')
+
+
+class BlacklistChannel(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
