@@ -35,7 +35,7 @@ class UniversalRss:
         rss_list = []
 
         def fetchRss(rss, feed):
-            r = Rss(channel_id=feed.id,
+            r = Rss.objects.create(channel_id=feed.id,
                                              title=rss.get('title', None),
                                              description=rss.get('summary', None),
                                              url_image=rss.get('r', None),
