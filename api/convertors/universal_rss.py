@@ -8,7 +8,8 @@ from django.db.models import Q
 from django.utils import timezone
 
 from api.models import Channel, Rss, Feed, RssStatus, BlacklistChannel
-
+from api.tools.thread_manager import ThreadManager
+import time
 
 class UniversalRss:
 
@@ -21,6 +22,7 @@ class UniversalRss:
         return datetime.fromtimestamp(mktime(struc_date), tz=pytz.UTC)
 
     def rss(self, request):
+        tm = ThreadManager()
         if not request.user.is_anonymous:
             blchs = [blch.channel.id for blch in BlacklistChannel.objects.filter(user=request.user)]
             chs = [ch.id for ch in Channel.objects.filter(Q(user=None) | Q(user=request.user))]
@@ -31,19 +33,23 @@ class UniversalRss:
         if not request.user.is_anonymous:
             feeds += list(Channel.objects.filter(user=request.user))
         rss_list = []
+
+        def fetchRss(rss, feed):
+            r = Rss(channel_id=feed.id,
+                                             title=rss.get('title', None),
+                                             description=rss.get('summary', None),
+                                             url_image=rss.get('r', None),
+                                             url_origin=rss.get('link', None),
+                                             date=self.get_date(rss.get('published_parsed', None)))
+
+            if request.user.is_anonymous or len(RssStatus.objects.filter(user=request.user, rss=r)) == 0:
+                rss_list.append(r)
+
         for feed in feeds:
             news_feed = feedparser.parse(feed.url)
             for rss in news_feed.entries:
-                r, _ = Rss.objects.get_or_create(channel_id=feed.id,
-                                                 title=rss.get('title', None),
-                                                 description=rss.get('summary', None),
-                                                 url_image=rss.get('r', None),
-                                                 url_origin=rss.get('link', None),
-                                                 date=self.get_date(rss.get('published_parsed', None)))
-
-                if request.user.is_anonymous or len(RssStatus.objects.filter(user=request.user, rss=r)) == 0:
-                    rss_list.append(r)
+                tm.add_and_run(fetchRss, rss, feed)
         # if not isinstance(user, AnonymousUser):
         #     rss.user_read.add(user)
-
+        tm.join_all()
         return sorted(rss_list, key=lambda x: x.date, reverse=True)[:20]
