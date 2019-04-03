@@ -12,5 +12,6 @@ urlpatterns = [
     path('naturalrss/', NaturalRss.as_view()),
     path('channel/', ChannelViews.as_view({'get': 'list'})),
 
+    path('fetch/', views.fetch),
     path('init/', views.init)
 ]

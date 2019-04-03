@@ -15,6 +15,7 @@ class Rss(models.Model):
     description = models.TextField(null=True, blank=True)
     url_image = models.CharField(max_length=128, null=True, blank=True)
     url_origin = models.CharField(max_length=128)
+    date = models.DateTimeField(null=True)
 
 
 class Feed(models.Model):
@@ -23,6 +24,7 @@ class Feed(models.Model):
     description = models.TextField(null=True, blank=True)
     url_image = models.CharField(max_length=128, null=True, blank=True)
     url_origin = models.CharField(max_length=128)
+    date = models.CharField(max_length=128)
 
 
 class RssStatus(models.Model):
