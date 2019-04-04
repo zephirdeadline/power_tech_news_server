@@ -46,4 +46,4 @@ class UniversalRss:
                     rss_list.append(r)
         # if not isinstance(user, AnonymousUser):
         #     rss.user_read.add(user)
-        return sorted(rss_list, key=lambda x: x.date, reverse=True)[:20]
+        return sorted(rss_list, key=lambda x: x.date, reverse=True)
